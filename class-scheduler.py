@@ -1,7 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait # Do I need these imports?
-from selenium.webdriver.support import expected_conditions as EC
 import sched,time,datetime
 from variables import driver_path, username, password
 
