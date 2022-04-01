@@ -11,9 +11,10 @@ from variables import driver_path, username, password
 browser = webdriver.Chrome()
 browser.get(('https://t.mmears.com/v2/home'))
 
-# HTML elements
-sign_in_button = browser.find_element(By.CLASS_NAME, 'sign--26Rs4')
-sign_in_button.click()
+browser.find_element(By.CLASS_NAME, 'sign--26Rs4').click()
+username_field = browser.find_element(By.CSS_SELECTOR, "input[placeholder='Email Address']").send_keys(username)
+password_field = browser.find_element(By.CSS_SELECTOR, "input[placeholder='Password']").send_keys(password)
+sign_in_submit = browser.find_element(By.CLASS_NAME,'button--3uR3-').click()
 
 username_field = browser.find_element(By.CSS_SELECTOR, "input[placeholder='Email Address']")
 username_field.send_keys(username)
