@@ -19,13 +19,16 @@ sign_in_submit = browser.find_element(By.CLASS_NAME,'button--3uR3-').click()
 username_field = browser.find_element(By.CSS_SELECTOR, "input[placeholder='Email Address']")
 username_field.send_keys(username)
 
-password_field = browser.find_element(By.CSS_SELECTOR, "input[placeholder='Password']")
-password_field.send_keys(password)
+try: 
+    time.sleep(8) # is there more efficient way do I need the EC should I use implicit wait?
+    element_present = EC.visibility_of_element_located((By.XPATH, '//body/div/div/div/div[3]/div/div[2]')) 
+    WebDriverWait(browser, 10).until(element_present)
+    pop_up = browser.find_element(By.XPATH, '//body/div/div/div/div[3]/div/div[2]')
+    ActionChains(browser).move_to_element_with_offset(pop_up, -20, 0).click().perform()
+    browser.find_element(By.XPATH, '/html/body/div[1]/div/div/div[3]/div').click()
 
-sign_in_submit = browser.find_element(By.CLASS_NAME,'button--3uR3-')
-sign_in_submit.click()
-# pop_up = browser.find_element_by_xpath('//*[@id="booknowWrapper"]/div[3]/div/div[2]/div/div/img')
-# confirm_button = browser.find_element_by_xpath('//*[@id="booknowWrapper"]/div[2]/div[2]/div[2]/div[1]')
+except Exception as exc:
+    print(exc)
 
 
 username_field.send_keys(username)
