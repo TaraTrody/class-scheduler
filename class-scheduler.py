@@ -8,7 +8,7 @@ import sched,time,datetime
 from variables import driver_path, username, password
 
 
-browser = webdriver.Chrome(driver_path)
+browser = webdriver.Chrome()
 browser.get(('https://t.mmears.com/v2/home'))
 
 # HTML elements
