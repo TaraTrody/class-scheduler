@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from selenium.webdriver.common.action_chains import ActionChains 
 import sched,time,datetime
+from datetime import datetime
 from variables import driver_path, username, password
 
 
@@ -27,6 +28,10 @@ try:
     pop_up = browser.find_element(By.XPATH, '//body/div/div/div/div[3]/div/div[2]')
     ActionChains(browser).move_to_element_with_offset(pop_up, -20, 0).click().perform()
     browser.find_element(By.XPATH, '/html/body/div[1]/div/div/div[3]/div').click()
+# Check day
+    time.sleep(4)
+    current_day = datetime.now()
+    formatted_day = current_day.strftime('%w')
     
 except Exception as exc:
     print(exc)
