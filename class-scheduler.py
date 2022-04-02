@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from selenium.webdriver.common.action_chains import ActionChains 
 import sched,time,datetime
-from datetime import datetime
+from datetime import datetime, timedelta
 from variables import driver_path, username, password
 
 
@@ -31,10 +31,22 @@ try:
 # Check day
     time.sleep(4)
     current_day = datetime.now()
-    formatted_day = current_day.strftime('%w')
+    delta = timedelta(hours=24)
+    schedule_day = (current_day + delta).strftime('%A')
+    
+   
+    current_day = current_day.strftime('%w')
 
-    if formatted_day == '5' or formatted_day == '6' or formatted_day == '0': 
+    if current_day == '5' or current_day == '6' or current_day == '0': 
         browser.find_element(By.XPATH, '//*[local-name()="svg" and @data-icon="right"]').click()
+        schedule_day = 'Monday'
+    
+    column_title = browser.find_element(By.XPATH, '//*[text()="Monday"]')
+    if column_title.is_displayed():
+        print('Element found')
+    
+    
+    
     
 except Exception as exc:
     print(exc)
