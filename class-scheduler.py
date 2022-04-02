@@ -32,41 +32,17 @@ try:
     time.sleep(4)
     current_day = datetime.now()
     formatted_day = current_day.strftime('%w')
+
+    if formatted_day == '5' or formatted_day == '6' or formatted_day == '0': 
+        browser.find_element(By.XPATH, '//*[local-name()="svg" and @data-icon="right"]').click()
     
 except Exception as exc:
     print(exc)
 
-# """
-# def getDay():
-#     get a list of elements with classname 'wek-name'
-#     loop over each element
-#     if the node value of child element p == today's Day + 1 return div (that element's sibling)
-
-# def getClass():
-#     day = getDay()
-#     t = time.time()
-#     current_time = time.strftime("%H:%M", t)
-    
-#     class_times = array of day's descendents whose classname == times
-#     loop over times_list
-#         if current_time < 06:00 && node value == "06:00 am"
-#             return ele
-#         if current_time > 06:00 && node value == "06:30 am"
-#             return ele
-            
-# def sched_class(class, button):
-#     class.click()
-#     button.click()
-    
-
-# class = getClass()
-
-# scheduler = sched.scheduler(time.sleep, time.sleep)
-
-# if time.time() < datetime.time(6,0,0): 
-#     scheduler.enterabs(datetime.time(6,0,0), 0, sched_class, argument=(class, confirm_button))
-# else:
-#     scheduler.enterabs(datetime.time(6,30,0), 0, sched_class, argument=(class, confirm_button))
-    
-# scheduler.run()
-# """
+# get current day 
+# search for current day on page that matches current day
+# 6:30 7:00 7:30 8:00 8:30
+# time how long it takes for refresh of page and then subtract that time from 630  possibly test this in browser
+# if it's not book then schedule 
+    # refresh the page seconds before and click at 
+    #can you check if the EC can locate based on inner text?
