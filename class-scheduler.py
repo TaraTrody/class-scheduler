@@ -43,6 +43,12 @@ try:
     
     xpath_str = "//p[normalize-space()='{0}']/parent::node()/following-sibling::div//p[@class='times-- 2iBSf']".format(schedule_day)
     class_times = browser.find_elements(By.XPATH, xpath_str)  
+    print(class_times)
+
+    for i in class_times:
+        WebDriverWait(browser,10).until(EC.element_to_be_clickable(i)).click()
+        browser.find_element(By.XPATH, '//div[normalize-space()="Confirm"]').click()
+        WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, '//div[normalize-space()="No, thanks!"]'))).click()
     
     
     
