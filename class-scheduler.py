@@ -41,9 +41,8 @@ try:
         browser.find_element(By.XPATH, '//*[local-name()="svg" and @data-icon="right"]').click()
         schedule_day = 'Monday'
     
-    column_title = browser.find_element(By.XPATH, '//*[text()="Monday"]')
-    if column_title.is_displayed():
-        print('Element found')
+    xpath_str = "//p[normalize-space()='{0}']/parent::node()/following-sibling::div//p[@class='times-- 2iBSf']".format(schedule_day)
+    class_times = browser.find_elements(By.XPATH, xpath_str)  
     
     
     
