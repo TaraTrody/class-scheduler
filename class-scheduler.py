@@ -71,6 +71,7 @@ try:
         
         print("Great! you you're schedule for the class")
 
+    # TODO: update with correct interval, start and end times
     current_date = dt.now().date() 
     start = f"{current_date} 00:19:00"
     end = f"{current_date} 00:22:00"    
