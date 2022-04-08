@@ -23,10 +23,8 @@ try:
 
     # Removes the modal  
     time.sleep(8) # NOTE: is there better way to implement this?
-    # FIXME: refactor to combine element present_present & popup
-    element_present = EC.visibility_of_element_located((By.XPATH, '//body/div/div/div/div[3]/div/div[2]')) 
-    WebDriverWait(browser, 10).until(element_present)
-    pop_up = browser.find_element(By.XPATH, '//body/div/div/div/div[3]/div/div[2]')
+
+    pop_up =  WebDriverWait(browser, 10).until(EC.visibility_of_element_located((By.XPATH,'//body/div/div/div/div[3]/div/div[2]')))
     ActionChains(browser).move_to_element_with_offset(pop_up, -20, 0).click().perform()
     browser.find_element(By.XPATH, '/html/body/div[1]/div/div/div[3]/div').click()
 
@@ -38,11 +36,14 @@ try:
         def get_next_class():
             # returns the next class time to be scheduled
             class_times = ['06:30', '07:00', '07:30', '08:00', '08:30', '09:00']
+
             def convert_dates(class_time):
                 return dt.strptime(class_time, '%H:%M').time()
+
             result  = map(convert_dates, class_times)
             current_time = dt.now().time()
             next_class = bisect.bisect_left(list(result),  current_time)
+
             return class_times[next_class] + " am"
         
 
@@ -67,9 +68,10 @@ try:
         # Clicks the class time, confirmation button and closes the pop up
         WebDriverWait(browser, 10). until(EC.element_to_be_clickable(class_times)).click()
         browser.find_element(By.XPATH, '//div[normalize-space()="Confirm"]').click()
+        # TODO: Get the correct element that pops up after scheduling a standby class
         WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, '//div[normalize-space()="No, thanks!"]'))).click()
         
-        print("Great! you you're schedule for the class")
+        print("Great! you're schedule for the class")
 
     # TODO: update with correct interval, start and end times
     current_date = dt.now().date() 
