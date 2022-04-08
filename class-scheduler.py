@@ -17,13 +17,13 @@ sched = BlockingScheduler()
 try: 
     # Log in to account
     browser.find_element(By.CLASS_NAME, 'sign--26Rs4').click()
-    username_field = browser.find_element(By.CSS_SELECTOR, "input[placeholder='Email Address']").send_keys(username)
-    password_field = browser.find_element(By.CSS_SELECTOR, "input[placeholder='Password']").send_keys(password)
-    sign_in_submit = browser.find_element(By.CLASS_NAME,'button--3uR3-').click()
+    browser.find_element(By.CSS_SELECTOR, "input[placeholder='Email Address']").send_keys(username)
+    browser.find_element(By.CSS_SELECTOR, "input[placeholder='Password']").send_keys(password)
+    browser.find_element(By.CLASS_NAME,'button--3uR3-').click()
 
-    # Removes the modal  
-    time.sleep(8) # NOTE: is there better way to implement this?
-
+    
+    time.sleep(5) 
+    # Removes the modal
     pop_up =  WebDriverWait(browser, 10).until(EC.visibility_of_element_located((By.XPATH,'//body/div/div/div/div[3]/div/div[2]')))
     ActionChains(browser).move_to_element_with_offset(pop_up, -20, 0).click().perform()
     browser.find_element(By.XPATH, '/html/body/div[1]/div/div/div[3]/div').click()
@@ -55,11 +55,12 @@ try:
 
         current_day = today.strftime('%w') 
 
-        # Click to next page to schedule the Monday class 
+        # Clicks to next page to schedule the Monday class 
         if current_day == '5' or current_day == '6' or current_day == '0': 
             browser.find_element(By.XPATH, '//*[local-name()="svg" and @data-icon="right"]').click()
             schedule_day = 'Monday'
-        # Get the class element
+            
+        # Gets the class element
         xpath_str = "//p[normalize-space()='{}']/parent::node()/following-sibling::div//p[text()='{}']".format(schedule_day, next_class)
         class_times = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, xpath_str)))
         
