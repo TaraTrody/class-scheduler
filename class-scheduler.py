@@ -64,7 +64,8 @@ try:
         xpath_str = "//p[normalize-space()='{}']/parent::node()/following-sibling::div//p[text()='{}']".format(schedule_day, next_class)
         class_times = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, xpath_str)))
         
-        # TODO update with logic to check if the sibling of the class time is Not "Booked" continue to schedule class
+        xpath_status = "//p[normalize-space()='{}']/parent::node()/following-sibling::div//p[text()='{}']/following-sibling::p".format(schedule_day, next_class)
+        status = WebDriverWait(browser, 10).until(EC.presence_of_element_located(By.XPATH, xpath_status ))
 
         # Clicks the class time, confirmation button and closes the pop up
         WebDriverWait(browser, 10). until(EC.element_to_be_clickable(class_times)).click()
