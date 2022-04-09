@@ -30,7 +30,7 @@ try:
 
    
     def schedule_class(): 
-        # This function defines the job the will select and schedule the upcoming class
+       
         browser.refresh()
             
         def get_next_class():
@@ -60,11 +60,11 @@ try:
             browser.find_element(By.XPATH, '//*[local-name()="svg" and @data-icon="right"]').click()
             schedule_day = 'Monday'
             
-        # Gets the class element
+        
         xpath_str = "//p[normalize-space()='{}']/parent::node()/following-sibling::div//p[text()='{}']".format(schedule_day, next_class)
         class_times = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, xpath_str)))
         
-        # TODO 1: update with logic to check if the sibling of the class time is Not "Booked" continue to schedule class
+       
         xpath_status = "//p[normalize-space()='{}']/parent::node()/following-sibling::div//p[text()='{}']/following-sibling::p".format(schedule_day, next_class)
         status = WebDriverWait(browser, 10).until(EC.presence_of_element_located(By.XPATH, xpath_status ))
         
@@ -72,8 +72,7 @@ try:
             # Clicks the class time, confirmation button and closes the pop up
             WebDriverWait(browser, 10). until(EC.element_to_be_clickable(class_times)).click()
             browser.find_element(By.XPATH, '//div[normalize-space()="Confirm"]').click()
-            # TODO 2: Get the correct element that pops up after scheduling a standby class
-            WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, '//div[normalize-space()="No, thanks!"]'))).click()
+            WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, ' //div[contains(text(),"OK")]'))).click()
             
             print("Great! you're schedule for the class")
 
