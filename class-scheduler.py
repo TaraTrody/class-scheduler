@@ -56,17 +56,20 @@ def schedule_class(next_class_time):
     current_day = today.strftime("%w")
 
     # Clicks to next page to schedule the Monday class
-    if current_day == "5" or current_day == "6" or current_day == "0":
+    if current_day == "0":
         browser.find_element(
             By.XPATH, '//*[local-name()="svg" and @data-icon="right"]'
         ).click()
         schedule_day = "Monday"
-    browser.refresh()
+
+    if current_day !="0":     
+        browser.refresh()
+
     xpath_str = "//p[normalize-space()='{}']/parent::node()/following-sibling::div//p[text()='{}']".format(
         schedule_day, next_class
     )
     class_times = WebDriverWait(browser, 10).until(
-        EC.presence_of_element_located((By.XPATH, xpath_str))
+        EC.element_to_be_clickable((By.XPATH, xpath_str))
     )
 
     WebDriverWait(browser, 10).until(EC.element_to_be_clickable(class_times)).click()
