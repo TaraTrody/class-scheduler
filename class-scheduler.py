@@ -35,7 +35,7 @@ def removeModal():
 
 
 def get_next_class():
-    class_times = ["06:30", "07:00", "07:30", "08:00", "08:30", "09:00"]
+    class_times = ["06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00"]
 
     def convert_dates(class_time):
         return dt.strptime(class_time, "%H:%M").time()
