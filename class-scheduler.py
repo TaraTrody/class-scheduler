@@ -7,11 +7,14 @@ from selenium.webdriver.common.action_chains import ActionChains
 from apscheduler.schedulers.background import BackgroundScheduler
 import time, bisect
 from datetime import datetime as dt, timedelta
-from variables import (
-    username,
-    password,
-)  # NOTE 1: Can this come from the system environ variables?
+from dotenv import load_dotenv
+import os 
 
+
+load_dotenv()
+driver_path =  os.getenv("DRIVER_PATH")
+username = os.getenv("USERNAME")
+password = os.getenv("PASSWORD")
 
 def signIn():
     browser.find_element(By.CLASS_NAME, "sign--26Rs4").click()
@@ -83,8 +86,10 @@ def schedule_class(next_class_time):
 
 
 if __name__ == "__main__":
+    # wrap in function or put in another file and create a main.py that imports
+    
     sched = BackgroundScheduler()
-    browser = webdriver.Chrome()
+    browser = webdriver.Chrome(driver_path)# update package
     browser.get(("https://t.mmears.com/v2/home"))
 
     signIn()
@@ -95,7 +100,7 @@ if __name__ == "__main__":
     current_date = dt.now().date().strftime("%Y-%m-%d")
     date_str = f"{current_date} {next_class[:5]}:00"
     sched.add_job(schedule_class, "date", run_date=date_str, args=[next_class])
-    sched.start()
+    sched.start()# account for errors here try/except raise exceptions per the docs
 
 try:
 
