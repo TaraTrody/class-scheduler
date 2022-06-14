@@ -80,11 +80,12 @@ def schedule_class(next_class_time):
 
         WebDriverWait(browser, 10).until(EC.element_to_be_clickable(class_times)).click()
         browser.find_element(By.XPATH, '//div[normalize-space()="Confirm"]').click()
-        # # FIXME: driver fails to find this element
+        time.sleep(6)
+        # FIXME: driver fails to find this element
     
-        # WebDriverWait(browser, 20).until(
-        #     EC.element_to_be_clickable((By.XPATH, ' //div[contains(text(),"OK")]'))
-        # ).click()
+        WebDriverWait(browser, 20).until(
+            EC.element_to_be_clickable((By.XPATH, ' //div[contains(text(),"OK")]'))
+        ).click()
     except Exception as exc:
         raise exc
 
@@ -111,7 +112,7 @@ if __name__ == "__main__":
     sched.add_listener(listener, EVENT_JOB_ERROR)
     sched.add_job(schedule_class, "date", run_date=date_str, args=[next_class])
 
-    sched.start()# account for errors here try/except raise exceptions per the docs
+    sched.start()
 
 
 try:
