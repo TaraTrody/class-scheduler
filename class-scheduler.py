@@ -112,20 +112,13 @@ if __name__ == "__main__":
     signIn()
     time.sleep(5)
     removeModal()
-    # next_class = get_next_class()
+    next_class = get_next_class()
 
-    page = browser.page_source
-    soup = BeautifulSoup(page, 'html.parser')
-
-    file = open('./page_source.html', 'w')
-    file.write(page)
-    file.close()
-
-    next_class = "06:00 am"
+    # next_class = "06:00 am"
 
     current_date = dt.now().date().strftime("%Y-%m-%d") 
-    # date_str = f"{current_date} {next_class[:5]}:00"
-    date_str = "2022-06-14 10:09:30"
+    date_str = f"{current_date} {next_class[:5]}:00"
+    # date_str = "2022-06-14 10:09:30"
     
     sched.add_listener(listener, EVENT_JOB_ERROR)
     sched.add_job(schedule_class, "date", run_date=date_str, args=[next_class])
