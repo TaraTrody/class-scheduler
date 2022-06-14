@@ -5,11 +5,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.events import EVENT_JOB_ERROR
+
 import time, bisect
 from datetime import datetime as dt, timedelta
 from dotenv import load_dotenv
 import os 
-
 
 load_dotenv()
 driver_path =  os.getenv("DRIVER_PATH")
@@ -51,43 +52,48 @@ def get_next_class():
 
 
 def schedule_class(next_class_time):
-    today = dt.now()
-    delta = timedelta(hours=24)  # classes scheduled 24hrs in advance
-    schedule_day = (today + delta).strftime("%A")
-    next_class = next_class_time
 
-    current_day = today.strftime("%w")
+    try:
+        today = dt.now()
+        delta = timedelta(hours=24)  # classes scheduled 24hrs in advance
+        schedule_day = (today + delta).strftime("%A")
+        next_class = next_class_time
 
-    # Clicks to next page to schedule the Monday class
-    if current_day == "0":
-        browser.find_element(
-            By.XPATH, '//*[local-name()="svg" and @data-icon="right"]'
-        ).click()
-        schedule_day = "Monday"
+        current_day = today.strftime("%w")
 
-    if current_day !="0":     
-        browser.refresh()
+        # Clicks to next page to schedule the Monday class
+        if current_day == "0":
+            browser.find_element(
+                By.XPATH, '//*[local-name()="svg" and @data-icon="right"]'
+            ).click()
+            schedule_day = "Monday"
 
-    xpath_str = "//p[normalize-space()='{}']/parent::node()/following-sibling::div//p[text()='{}']".format(
-        schedule_day, next_class
-    )
-    class_times = WebDriverWait(browser, 10).until(
-        EC.element_to_be_clickable((By.XPATH, xpath_str))
-    )
+        if current_day !="0":     
+            browser.refresh()
 
-    WebDriverWait(browser, 10).until(EC.element_to_be_clickable(class_times)).click()
-    browser.find_element(By.XPATH, '//div[normalize-space()="Confirm"]').click()
-    # FIXME: driver fails to find this element
-    WebDriverWait(browser, 20).until(
-        EC.element_to_be_clickable((By.XPATH, ' //div[contains(text(),"OK")]'))
-    ).click()
+        xpath_str = "//p[normalize-space()='{}']/parent::node()/following-sibling::div//p[text()='{}']".format(
+            schedule_day, next_class
+        )
+        class_times = WebDriverWait(browser, 10).until(
+            EC.element_to_be_clickable((By.XPATH, xpath_str))
+        )
+
+        WebDriverWait(browser, 10).until(EC.element_to_be_clickable(class_times)).click()
+        browser.find_element(By.XPATH, '//div[normalize-space()="Confirm"]').click()
+        # # FIXME: driver fails to find this element
+    
+        # WebDriverWait(browser, 20).until(
+        #     EC.element_to_be_clickable((By.XPATH, ' //div[contains(text(),"OK")]'))
+        # ).click()
+    except Exception as exc:
+        raise exc
 
     print("Great! you're schedule for the class")
 
+def listener(event):
+    print(f'Job {event.job_id} raised {event.exception.__class__.__name__}')
 
-if __name__ == "__main__":
-    # wrap in function or put in another file and create a main.py that imports
-    
+if __name__ == "__main__":    
     sched = BackgroundScheduler()
     browser = webdriver.Chrome(driver_path)# update package
     browser.get(("https://t.mmears.com/v2/home"))
@@ -96,17 +102,23 @@ if __name__ == "__main__":
     time.sleep(5)
     removeModal()
     next_class = get_next_class()
+    # next_class = "06:00 am"
 
-    current_date = dt.now().date().strftime("%Y-%m-%d")
+    current_date = dt.now().date().strftime("%Y-%m-%d") 
     date_str = f"{current_date} {next_class[:5]}:00"
+    # date_str = "2022-06-13 23:02:00"
+    
+    sched.add_listener(listener, EVENT_JOB_ERROR)
     sched.add_job(schedule_class, "date", run_date=date_str, args=[next_class])
+
     sched.start()# account for errors here try/except raise exceptions per the docs
+
 
 try:
 
-    for i in range(1, 150):
+    for i in range(1, 90):
         time.sleep(2)
     sched.shutdown()
+    browser.quit()
 except (KeyboardInterrupt, SystemExit):
-
     sched.shutdown()
