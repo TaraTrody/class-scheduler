@@ -74,33 +74,32 @@ def schedule_class(next_class_time):
         else:
             time.sleep(2)
 
-        
+        # select class and confirm selection
         xpath_str = "//p[normalize-space()='{}']/parent::node()/following-sibling::div//p[text()='{}']".format(
             schedule_day, next_class
         )
-        class_times = WebDriverWait(browser, 10).until(
-            EC.element_to_be_clickable((By.XPATH, xpath_str))
-        ) # The next line duplicates this
-
-        WebDriverWait(browser, 10).until(EC.element_to_be_clickable(class_times)).click()
+        WebDriverWait(browser, 10).until(EC.element_to_be_clickable((By.XPATH, xpath_str))).click()
         browser.find_element(By.XPATH, '//div[normalize-space()="Confirm"]').click()
         time.sleep(6)
        
     
+        # $x("//div[@class='bookDialog--3peje']//div[@class='content--1SzOq']/div") - path to the the div above
+        confirm_text = WebDriverWait(browser,10).until(EC.presence_of_element_located((By.XPATH, "//div[@class='dialogcontent--iPu4Q']")))
+        print(confirm_text.text)
+
         WebDriverWait(browser, 20).until(
             EC.element_to_be_clickable((By.XPATH, ' //div[contains(text(),"OK")]'))
         ).click()
 
-        time.sleep(3)
+        # time.sleep(3)
 
-        confirm_xpath_str = "//p[contains(text(),'{}')]/parent::node()/following-sibling::div//p[text()='{}']//following-sibling::p/text()".format(schedule_day, next_class) 
-        confirm_class = WebDriverWait(browser,10).until(EC.presence_of_element_located((By.XPATH, confirm_xpath_str)))
-        print(confirm_class)
+        # confirm_xpath_str = "//p[contains(text(),'{}')]/parent::node()/following-sibling::div//p[text()='{}']//following-sibling::p".format(schedule_day, next_class) 
+        # confirm_class = WebDriverWait(browser,10).until(EC.presence_of_element_located((By.XPATH, confirm_xpath_str)))
+        # print(confirm_class.text)
 
     except Exception as exc:
         raise exc
 
-    print("Great! you're schedule for the class")
 
 def listener(event):
     print(f'Job {event.job_id} raised {event.exception.__class__.__name__}')
@@ -108,7 +107,7 @@ def listener(event):
 if __name__ == "__main__":    
     sched = BackgroundScheduler()
     browser = webdriver.Chrome(driver_path)# update package
-    browser.get(("https://t.mmears.com/v2/home"))
+    browser.get(url)
 
     signIn()
     time.sleep(5)
@@ -119,7 +118,7 @@ if __name__ == "__main__":
 
     current_date = dt.now().date().strftime("%Y-%m-%d") 
     date_str = f"{current_date} {next_class[:5]}:00"
-    # date_str = "2022-06-14 10:09:30"
+    # date_str = "2022-06-16 18:53:00"
     
     sched.add_listener(listener, EVENT_JOB_ERROR)
     sched.add_job(schedule_class, "date", run_date=date_str, args=[next_class])
