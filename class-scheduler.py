@@ -16,6 +16,7 @@ load_dotenv()
 driver_path =  os.getenv("DRIVER_PATH")
 username = os.getenv("USERNAME")
 password = os.getenv("PASSWORD")
+url = os.getenv("URL")
 
 def signIn():
     browser.find_element(By.CLASS_NAME, "sign--26Rs4").click()
