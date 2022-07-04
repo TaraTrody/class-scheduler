@@ -1,8 +1,11 @@
+from lib2to3.pgen2 import driver
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+
+from selenium.webdriver.chrome.service import Service
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.events import EVENT_JOB_ERROR
@@ -82,7 +85,6 @@ def schedule_class(next_class_time):
         browser.find_element(By.XPATH, '//div[normalize-space()="Confirm"]').click()
         time.sleep(6)
        
-    
         # $x("//div[@class='bookDialog--3peje']//div[@class='content--1SzOq']/div") - path to the the div above
         confirm_text = WebDriverWait(browser,10).until(EC.presence_of_element_located((By.XPATH, "//div[@class='dialogcontent--iPu4Q']")))
         print(confirm_text.text)
@@ -100,20 +102,19 @@ def schedule_class(next_class_time):
     except Exception as exc:
         raise exc
 
-
 def listener(event):
     print(f'Job {event.job_id} raised {event.exception.__class__.__name__}')
 
 if __name__ == "__main__":    
     sched = BackgroundScheduler()
-    browser = webdriver.Chrome(driver_path)# update package
+    s = Service(driver_path)
+    browser = webdriver.Chrome(service=s)
     browser.get(url)
-
+    
     signIn()
     time.sleep(5)
     removeModal()
     next_class = get_next_class()
-
     # next_class = "06:00 am"
 
     current_date = dt.now().date().strftime("%Y-%m-%d") 
@@ -122,13 +123,9 @@ if __name__ == "__main__":
     
     sched.add_listener(listener, EVENT_JOB_ERROR)
     sched.add_job(schedule_class, "date", run_date=date_str, args=[next_class])
-
-
     sched.start()
 
-
 try:
-
     for i in range(1, 90):
         time.sleep(2)
     sched.shutdown()
